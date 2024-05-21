@@ -49,9 +49,78 @@ public class GameTest {
         board.placeStone(0);    // Spieler 2
         board.placeStone(0);    // Spieler 1
         board.placeStone(0);    // Spieler 2
-        board.placeStone(0);    // Spieler 1
+        //board.placeStone(0);    // Spieler 1
         assertEquals(0, board.getWhoHasWon(), "Falscher Gewinner Status");
         assertEquals(false, board.getIsFull(), "Falscher IsFull Status");
     }
+    @Test
+    @DisplayName("Sieg Spieler 2")
+    void testPlaceStone3(){
+        board.placeStone(0);    // Spieler 1    
+        board.placeStone(3);    // Spieler 2     
+        board.placeStone(1);    // Spieler 1
+        board.placeStone(3);    // Spieler 2
+        board.placeStone(2);    // Spieler 1
+        board.placeStone(3);    // Spieler 2
+        board.placeStone(1);    // Spieler 1
+        board.placeStone(3);    // Spieler 2
+        assertEquals(2, board.getWhoHasWon(), "Falscher Gewinner Status");
+        assertEquals(false, board.getIsFull(), "Falscher IsFull Status");
+    }
+
+    @Test
+    @DisplayName("Board Voll ohne Sieger")
+    void testFullBoardWithoutWinner() {
+        for(int i = 0; i < 6 ; i++) board.placeStone(0);
+        for(int i = 0; i < 6 ; i++) board.placeStone(1);
+        for(int i = 0; i < 6 ; i++) board.placeStone(2);
+        board.placeStone(4);
+        board.placeStone(3);
+        for(int i = 0; i < 5 ; i++) board.placeStone(3);
+        for(int i = 0; i < 5 ; i++) board.placeStone(4);
+        for(int i = 0; i < 6 ; i++) board.placeStone(5);
+        for(int i = 0; i < 6 ; i++) board.placeStone(6);
+        assertEquals(0, board.getWhoHasWon(), "Falscher Gewinner Status");
+        assertEquals(true, board.getIsFull(), "Falscher IsFull Status");
+    }
+    @Test
+    
+    @DisplayName("Sieg Spieler 1 - Horizontal")
+    void testHorizontalWin() {
+        // Horizontaler Sieg für Spieler 1
+        board.placeStone(0);    // Spieler 1    
+        board.placeStone(1);    // Spieler 2     
+        board.placeStone(0);    // Spieler 1
+        board.placeStone(2);    // Spieler 2
+        board.placeStone(0);    // Spieler 1
+        board.placeStone(3);    // Spieler 2
+        board.placeStone(0);    // Spieler 1 (horizontaler Sieg)
+    
+    
+    assertEquals(1, board.getWhoHasWon(), "Falscher Gewinner Status");
+    assertEquals(false, board.getIsFull(), "Falscher IsFull Status");
+    }
+
+    @Test
+    @DisplayName("Sieg Spieler 1 - Diagonal")
+    void testDiagonalWin() {
+        // Diagonaler Sieg für Spieler 1
+        board.placeStone(0);    // Spieler 1    
+        board.placeStone(1);    // Spieler 2     
+        board.placeStone(1);    // Spieler 1
+        board.placeStone(2);    // Spieler 2
+        board.placeStone(2);    // Spieler 1
+        board.placeStone(3);    // Spieler 2
+        board.placeStone(2);    // Spieler 1
+        board.placeStone(3);    // Spieler 2
+        board.placeStone(3);    // Spieler 1
+        board.placeStone(4);    // Spieler 2
+        board.placeStone(3);    // Spieler 1 (diagonaler Sieg)
+    
+        assertEquals(1, board.getWhoHasWon(), "Falscher Gewinner Status");
+        assertEquals(false, board.getIsFull(), "Falscher IsFull Status");
+    }
+
+
 
 }
