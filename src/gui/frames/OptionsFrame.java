@@ -6,7 +6,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 class OptionsFrame {
-    OptionsFrame(){
+    BoardInterface boardInterface;
+    OptionsFrame(BoardInterface boardInterface){
+        this.boardInterface=boardInterface;
         JFrame optionsFrame = new JFrame("Optionen");
 
         JPanel panel = new JPanel();
@@ -38,14 +40,17 @@ class OptionsFrame {
             new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                   optionsFrame.setVisible(false);
+                   optionsFrame.dispose();
                 };
             });
-
+            
         playAgainButton.addActionListener(
             new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    Integer y_heightNew = Integer.parseInt(heightInput.getText());
+                    Integer x_widthNew = Integer.parseInt(widthInput.getText());
+                    
 
                 };
             });
@@ -54,7 +59,7 @@ class OptionsFrame {
             new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-
+                
                 };
             });
 
@@ -62,7 +67,7 @@ class OptionsFrame {
             new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-
+                    optionsFrame.dispose();
                 };
             });
 
@@ -83,7 +88,7 @@ class OptionsFrame {
         optionsFrame.setSize(450, 600);
         optionsFrame.setLocationRelativeTo(null);
         optionsFrame.setAlwaysOnTop(true);
-        optionsFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        optionsFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         optionsFrame.setVisible(true);
     }
 }
