@@ -1,8 +1,10 @@
 package gui.frames;
 
+import api.BoardInterface;
 import gui.entity.BordersForCircle;
 import gui.entity.Circle;
 import gui.handler.MouseHandler;
+import logic.Board;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,7 +18,7 @@ import java.util.Random;
  *
  * @author Konrad
  */
-public class MainFrame extends JPanel {
+public class MainPanel extends JPanel {
     private final int SCREEN_WIDTH = 1300;
     private final int SCREEN_HEIGHT = 900;
 
@@ -42,9 +44,28 @@ public class MainFrame extends JPanel {
     final private int BUTTON_X_POSITION = SCREEN_WIDTH - BUTTON_WIDTH - 30;
     final private int BUTTON_Y_POSITION = 25;
 
-    public MainFrame() {
+    private BoardInterface boardInterface;
+
+    public MainPanel() {
         X_COUNT_OF_CIRCLES = 7;
         Y_COUNT_OF_CIRCLES = 6;
+
+        boardInterface = new Board(X_COUNT_OF_CIRCLES, Y_COUNT_OF_CIRCLES);
+
+        initializeCircles();
+        calculateAmountOfCirclesForEachPlayer();
+        createLocationsOfCirclesInsideOfStorageBox();
+
+        this.setBackground(new Color(243, 234, 255, 255));
+        this.addMouseListener(new MouseHandler(this));
+        this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
+    }
+
+    public MainPanel(int X_COUNT_OF_CIRCLES, int Y_COUNT_OF_CIRCLES) {
+        this.X_COUNT_OF_CIRCLES = X_COUNT_OF_CIRCLES;
+        this.Y_COUNT_OF_CIRCLES = Y_COUNT_OF_CIRCLES;
+
+        boardInterface = new Board(Y_COUNT_OF_CIRCLES, X_COUNT_OF_CIRCLES);
 
         initializeCircles();
         calculateAmountOfCirclesForEachPlayer();
@@ -69,8 +90,8 @@ public class MainFrame extends JPanel {
         renderGameBoard(graphics2D);
         renderGameElements(graphics2D);
         renderCircleInStorage(graphics2D);
-        drawTextLabel(graphics2D, "left", "Player 1");
-        drawTextLabel(graphics2D, "right", "Player 2");
+        drawTextLabel(graphics2D, "left", "Spieler 1");
+        drawTextLabel(graphics2D, "right", "Spieler 2");
         renderPlayersTurnText(graphics2D);
         renderSettingsButton(graphics2D);
 
@@ -125,9 +146,9 @@ public class MainFrame extends JPanel {
      */
 
     private void renderPlayersTurnText(Graphics2D graphics2D) {
-        final int Y_POSITION = 100;
-        final String TEXT = turnPlayer1 ? "Player 1's turn" : "Player 2's turn";
-        final int FONT_SIZE = 32; // Choose the desired font size
+        final int Y_POSITION = 120;
+        final String TEXT = turnPlayer1 ? "Spieler 1 ist dran!" : "Spieler 2 ist dran!";
+        final int FONT_SIZE = 40; // Choose the desired font size
 
         // Set the font size
         Font originalFont = graphics2D.getFont();
@@ -230,7 +251,7 @@ public class MainFrame extends JPanel {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new OptionsFrame();
+                new OptionsFrame(BoardInterface boardInterface);
             }
         });
     }
@@ -300,26 +321,6 @@ public class MainFrame extends JPanel {
     private void renderGameElements(Graphics2D graphics2D) {
         for (Circle circle : CIRCLES) {
             drawCircle(circle, graphics2D);
-        }
-    }
-
-    /**
-     * Renders the interactive elements on the game board for user interaction.
-     * This method draws rectangles representing clickable areas on the board.
-     * Only for developers with color.
-     * might delete later on.
-     */
-    private void renderInteractiveBoard(Graphics2D graphics2D) {
-        int xCoordinates = (int) SCREEN_WIDTH / 3;
-        int yCoordinates = (int) SCREEN_HEIGHT / 3;
-        graphics2D.setColor(Color.green);
-
-        // Loop through columns
-        for (int i = 0; i < X_COUNT_OF_CIRCLES; i++) {
-            if (i != 0) xCoordinates += calculateWhereToPlaceCircleHorizontally();
-
-            // Draw rectangle for each column
-            graphics2D.fillRect(xCoordinates, yCoordinates - 50, RADIUS_CYCLE, 70);
         }
     }
 
@@ -395,10 +396,24 @@ public class MainFrame extends JPanel {
 
         for (int i = 0; i < X_COUNT_OF_CIRCLES; i++) {
             if (mouseX >= xCordinatesForEachColumn - RADIUS_CYCLE && mouseX <= xCordinatesForEachColumn + RADIUS_CYCLE) {
+                boardInterface.placeStone(i);
                 changeColorOfCircleInClickedColumn(i);
+                checkGameStatus();
                 break;
             }
             xCordinatesForEachColumn += calculateWhereToPlaceCircleHorizontally();
+        }
+    }
+
+    private void checkGameStatus() {
+        if (boardInterface.getIsFull()) {
+            System.out.println("is full, no one won");
+        }
+        if (boardInterface.getWhoHasWon() == 1) {
+            System.out.println("openEndScreen with player 1 won");
+        }
+        if (boardInterface.getWhoHasWon() == 2) {
+            System.out.println("openEndScreen with player 2 won");
         }
     }
 
